@@ -1,0 +1,20 @@
+extends layout/layout
+
+block content
+  .text-center.from-height.d-flex
+    form.form-signin(action="/auth/admin/signin", method="post")
+      img.mb-4(src='#', alt='', width='72', height='72')
+      h1.h3.mb-3.font-weight-normal= title
+      label.sr-only(for='inputEmail') Email address
+      input#inputEmail.form-control(type='email', placeholder='Email address', required='', autofocus='', name="email")
+      label.sr-only(for='inputPassword') Password
+      input#inputPassword.form-control(type='password', placeholder='Password', required='', name="password")
+      .checkbox.mb-3
+        label
+          input(type='checkbox', value='remember-me')
+          |  Remember me
+      .alert.alert-danger
+        h6= title
+        h6= error
+      button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
+      p.mt-5.mb-3.text-muted © 2017-2018
