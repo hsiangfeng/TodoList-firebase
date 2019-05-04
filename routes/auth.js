@@ -7,8 +7,13 @@ const firebaseAuth = firebaseClient.auth();
 
 /* GET signin page. */
 router.get('/', (req, res) => {
+  const error = req.flash('error');
   console.log(`status: ${req.flash('error')},${req.url}`);
-  res.render('dashboard/signin', { title: '登入', error: req.flash('error') });
+  res.render('dashboard/signin', {
+    title: '登入',
+    error,
+    hesInfo: error.length > 0,
+  });
 });
 
 // signin
@@ -20,7 +25,7 @@ router.post('/admin/signin', (req, res) => {
   firebaseAuth.signInWithEmailAndPassword(account.email, account.password)
     .then((response) => {
       req.session.uid = response.user.uid;
-      res.redirect('/dashboard/index');
+      res.redirect('/dashboard/');
     })
     .catch((error) => {
       console.log(`error ${error.message}`);
@@ -33,7 +38,7 @@ router.post('/admin/signin', (req, res) => {
 // signout
 router.post('/logout', (req, res) => {
   req.session.uid = '';
-  res.redirect('/auth/signin');
+  res.redirect('/auth/');
 });
 
 module.exports = router;

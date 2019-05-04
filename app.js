@@ -39,6 +39,13 @@ app.use(sassMiddleware({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
 
+// const authCheck = (req, res, next) => {
+//   if (req.session.uid) {
+//     return next();
+//   }
+//   return res.redirect('/auth/');
+// };
+
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/dashboard', dashboardRouter);

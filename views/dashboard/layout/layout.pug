@@ -1,7 +1,37 @@
-doctype html
-html
+<!DOCTYPE html>
+html(lang="en")
   head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="X-UA-Compatible", content="ie=edge")
     title= title
-    link(rel='stylesheet', href='/css/all.css')
+    link(rel="stylesheet", href="/css/all.css")
+    script(src="https://code.jquery.com/jquery-3.4.0.js", integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo=", crossorigin="anonymous")
   body
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light
+      a.navbar-brand(href='#') Navbar
+      button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href='/dashboard')
+              | 首頁 
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href='/dashboard/created') 新增
+          li.nav-item
+            a.nav-link(href='/dashboard/category') 分類
+          li.nav-item.dropdown
+            a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+              | 管理功能
+            .dropdown-menu(aria-labelledby='navbarDropdown')
+              a.dropdown-item(href='#') 帳號管理
+              a.dropdown-item(href='#') 新增帳號
+              .dropdown-divider
+              a.dropdown-item(href='#') Something else here
+          li.nav-item
+            a.nav-link.disabled(href='#', tabindex='-1', aria-disabled='true') Disabled
+        form(action="/auth/logout", method="post")
+          button(type="submit").btn 登出
     block content

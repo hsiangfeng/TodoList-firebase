@@ -1,0 +1,74 @@
+extends layout/layout
+block content
+  .container
+    .row.justify-content-center
+      .col-md-8
+        h3.h3= title
+        form(action="/dashboard/category/created", method="post")
+          table.table.table-responsive-md.table-hover.table-bordered.table-striped
+            thead
+                tr
+                  th 新增分類
+                  th.text-right 功能
+            tbody
+              tr
+                td 
+                  input(type="text", name="title").form-control
+                td
+                  button(type="submit").btn.btn-primary.w-50 新增
+                  button(type="reset").btn.btn-danger.w-50 重設
+          if hasInfo
+            .alert.alert-danger
+              = messages
+          if hasSiccess
+            .alert.alert-primary
+              = success
+        table.table.table-responsive-md.table-hover.table-bordered.table-striped
+          thead
+            tr
+              th 分類
+              th.text-right 建立時間
+              th.text-right 功能
+          tbody
+            each item in category
+              tr
+                td
+                  input(type="text", value=item.title, id=item.id).form-control
+                td.text-right
+                  = momont(item.upDateTime * 1000).format('YYYY/MM/DD HH:mm:ss')
+                td.text-right
+                  a(href="#",data-id=item.id).btn.btn-outline-primary.editCategory 編輯
+                  a(href="#",data-id=item.id, data-title=item.title).btn.btn-outline-danger.delCategory 刪除
+  script.
+    $(document).ready(() => {
+      $('.delCategory').on('click', function(e){
+        e.preventDefault();
+        const id = $(this).data('id');
+        const title = $(this).data('title');
+        if (window.confirm(`是否真的要刪除${title}?`)) {
+          console.log('確認刪除');
+          $.ajax({
+            url: `/dashboard/category/delete/${id}`,
+            method: 'DELETE',
+          }).done((data) => {
+            console.log(data);
+            window.location = data.url;
+          });
+        }
+      });
+      $('.editCategory').on('click', function(e){
+        e.preventDefault();
+        const id = $(this).data('id');
+        const title = $(`#${id}`).val();
+        $.ajax({
+          url: `/dashboard/category/edit/${id}`,
+          method: 'PUT',
+          data: {
+            title,
+          }
+        }).done((data) => {
+          console.log(data);
+          window.location = data.url;
+        });
+      });
+    });
