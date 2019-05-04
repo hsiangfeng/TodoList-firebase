@@ -1,26 +1,33 @@
 extends layout/layout
 block content
-  script(src="https://cdn.ckeditor.com/4.11.4/standard/ckeditor.js")
   .container
     h5.h5= title
-    form(action="/dashboard/created", method="post")
+    if hasSuccess
+      .alert.alert-primary
+              = success
+    if hasInfo
+      .alert.alert-danger
+              = info
+    form(action=action_url, method="post")
       .row
         .col-md-8
           label(for="title") 代辦事項標題 
-          input(type="text", id="title", name="title").form-control
+          input(type="text", id="title", name="title", value=todolist ? todolist.title : '').form-control
           textarea(name="editor")
+            = todolist ? todolist.editor : ''
         .col-md-4
           .row
             .col-md-12
               h5.h5 代辦事項分類
               each item in category
                 .custom-control.custom-radio
-                  input.custom-control-input(type='radio', name='category', required, id=item.id, value=item.id)
+                  input.custom-control-input(type='radio', name='category', required, id=item.id, value=item.id,
+                  checked=todolist.category === item.id ? true : false)
                   label.custom-control-label(for=item.id)= item.title
             .col-md-12
               h5.h5 狀態
               .custom-control.custom-switch
-                input#customSwitch1.custom-control-input(type='checkbox' name="status")
+                input#customSwitch1.custom-control-input(type='checkbox' name="status" checked=todolist ? todolist.status : '')
                 label.custom-control-label(for='customSwitch1')  代辦狀態
 
       hr
@@ -30,3 +37,4 @@ block content
 
   script.
      CKEDITOR.replace('editor');
+     

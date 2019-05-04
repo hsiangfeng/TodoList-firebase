@@ -9,57 +9,28 @@ block content
       li.nav-item
         a.nav-link(href='#') 結束
     .card-columns
-      .card
-        img.card-img-top(src='...', alt='...')
-        .card-body
-          h5.card-title Card title that wraps to a new line
-          p.card-text
-            | This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
-        .card-footer
-          a(href="#").btn.btn-outline-primary.w-50 編輯
-          a(href="#").btn.btn-danger.w-50 刪除
-      .card.p-3
-        blockquote.blockquote.mb-0.card-body
-          p
-            | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
-          footer.blockquote-footer
-            small.text-muted
-              | Someone famous in 
-              cite(title='Source Title') Source Title
-      .card
-        img.card-img-top(src='...', alt='...')
-        .card-body
-          h5.card-title Card title
-          p.card-text This card has supporting text below as a natural lead-in to additional content.
-          p.card-text
-            small.text-muted Last updated 3 mins ago
-      .card.bg-primary.text-white.text-center.p-3
-        blockquote.blockquote.mb-0
-          p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat.
-          footer.blockquote-footer.text-white
-            small
-              | Someone famous in 
-              cite(title='Source Title') Source Title
-      .card.text-center
-        .card-body
-          h5.card-title Card title
-          p.card-text This card has a regular title and short paragraphy of text below it.
-          p.card-text
-            small.text-muted Last updated 3 mins ago
-      .card
-        img.card-img-top(src='...', alt='...')
-      .card.p-3.text-right
-        blockquote.blockquote.mb-0
-          p
-            | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
-          footer.blockquote-footer
-            small.text-muted
-              | Someone famous in 
-              cite(title='Source Title') Source Title
-      .card
-        .card-body
-          h5.card-title Card title
-          p.card-text
-            | This is another card with title and supporting text below. This card has some additional content to make it slightly taller overall.
-          p.card-text
-            small.text-muted Last updated 3 mins ago
+      each item in todolist
+        .card
+          .card-body
+            h5.card-title= item.title
+            p.card-text
+              != item.editor
+          .card-footer.text-center
+            a(href="/dashboard/todolist/"+item.id).btn.btn-outline-primary 編輯
+            a(href="#" data-id=item.id data-title=item.title).btn.btn-danger.delete-todo.ml-1 刪除
+  script.
+    $(document).ready(() => {
+      $('.delete-todo').on('click', function(e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+        const title = $(this).data('title');
+        if (window.confirm(`你確定要刪除${title}?`)) {
+          $.ajax({
+            url: `/dashboard/todolist/delete/${id}`,
+            method: 'delete',
+          }).done((data) => {
+            window.location = data.url;
+          })
+        }
+      })
+    })

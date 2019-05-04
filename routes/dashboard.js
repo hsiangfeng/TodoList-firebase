@@ -9,11 +9,23 @@ const router = express.Router();
 
 /* GET home page. */
 router.get('/', (req, res) => {
-  res.render('dashboard/index', { title: '登入' });
+  todolistRef.orderByChild('upDateTime').once('value')
+    .then((snapshot) => {
+      const todolist = [];
+      snapshot.forEach((item) => {
+        todolist.push(item.val());
+      });
+      res.render('dashboard/index', {
+        title: '登入',
+        todolist,
+      });
+    });
 });
 
 // todolist
-router.get('/created', (req, res) => {
+router.get('/todolist/', (req, res) => {
+  const success = req.flash('success');
+  const info = req.flash('info');
   categoryRef.orderByChild('upDateTime').once('value')
     .then((snapshot) => {
       const category = [];
@@ -21,34 +33,88 @@ router.get('/created', (req, res) => {
         category.push(item.val());
       });
       category.reverse();
-      res.render('dashboard/created', {
+      res.render('dashboard/todolist', {
         title: '新增代辦事項',
         category,
+        hasSuccess: success.length > 0,
+        hasInfo: info.length > 0,
+        success,
+        action_url: '/dashboard/todolist/created',
+        todolist: '',
+        info,
       });
     });
 });
 
-router.post('/created', (req, res) => {
+router.post('/todolist/created', (req, res) => {
   const todolistData = req.body;
   const todolistPush = todolistRef.push();
   const upDateTime = Math.floor(Date.now() / 1000);
   todolistData.upDateTime = upDateTime;
-  upDateTime.id = todolistPush.key;
+  todolistData.id = todolistPush.key;
   todolistRef.orderByChild('title').equalTo(todolistData.title).once('value')
     .then((snapshot) => {
       if (snapshot.val() !== null) {
         req.flash('info', '已存在相同代辦事項名稱。');
-        res.redirect('/dashboard/created');
+        res.redirect('/dashboard/todolist');
       } else {
         todolistPush.set(todolistData).then(() => {
           req.flash('success', '代辦事項新增成功。');
-          res.redirect('/dashboard/created');
+          res.redirect('/dashboard/todolist');
         });
       }
     })
     .catch((error) => {
       req.flash('info', `出現錯誤:${error}`);
     });
+});
+
+router.get('/todolist/:id', (req, res) => {
+  const { id } = req.params;
+  const success = req.flash('success');
+  const category = [];
+  categoryRef.orderByChild('upDateTime').once('value')
+    .then((snapshot) => {
+      snapshot.forEach((snapshotChild) => {
+        category.push(snapshotChild.val());
+      });
+      category.reverse();
+      return todolistRef.child(id).once('value');
+    })
+    .then((snapshot) => {
+      const todolist = snapshot.val();
+      res.render('dashboard/todolist', {
+        title: '編輯代辦事項',
+        category,
+        action_url: `/dashboard/todolist/edit/${id}`,
+        hasSuccess: success.length > 0,
+        success,
+        todolist,
+        momont,
+      });
+    });
+});
+
+router.post('/todolist/edit/:id', (req, res) => {
+  const { id } = req.params;
+  const todolistData = req.body;
+  const upDateTime = Math.floor(Date.now() / 1000);
+  todolistData.upDateTime = upDateTime;
+  todolistRef.child(id).update(todolistData)
+    .then(() => {
+      req.flash('success', '編輯成功');
+      res.redirect(`/dashboard/todolist/${id}`);
+    });
+});
+
+router.delete('/todolist/delete/:id', (req, res) => {
+  const { id } = req.params;
+  todolistRef.child(id).remove();
+  res.send({
+    message: '刪除成功',
+    url: '/dashboard/',
+  });
+  res.end();
 });
 
 // category
@@ -109,7 +175,7 @@ router.put('/category/edit/:id', (req, res) => {
     .then(() => {
       req.flash('success', '編輯成功');
       res.send({
-        message: '文章刪除',
+        message: '編輯成功',
         url: '/dashboard/category',
       });
       res.end();

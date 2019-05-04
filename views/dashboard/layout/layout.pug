@@ -6,6 +6,7 @@ html(lang="en")
     meta(http-equiv="X-UA-Compatible", content="ie=edge")
     title= title
     link(rel="stylesheet", href="/css/all.css")
+    script(src="https://cdn.ckeditor.com/4.11.4/standard/ckeditor.js")
     script(src="https://code.jquery.com/jquery-3.4.0.js", integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo=", crossorigin="anonymous")
   body
     nav.navbar.navbar-expand-lg.navbar-light.bg-light
@@ -19,7 +20,7 @@ html(lang="en")
               | 首頁 
               span.sr-only (current)
           li.nav-item
-            a.nav-link(href='/dashboard/created') 新增
+            a.nav-link(href='/dashboard/todolist') 新增
           li.nav-item
             a.nav-link(href='/dashboard/category') 分類
           li.nav-item.dropdown
