@@ -3,11 +3,11 @@ block content
   .container
     ul.nav.nav-tabs.justify-content-center
       li.nav-item
-        a.nav-link.active(href='#') 全部
+        a.nav-link.active(href='/dashboard?status=all') 全部
       li.nav-item
-        a.nav-link(href='#') 代辦中
+        a.nav-link(href='/dashboard?status=on') 代辦中
       li.nav-item
-        a.nav-link(href='#') 結束
+        a.nav-link(href='/dashboard?status=off') 結束
     .card-columns
       each item in todolist
         .card

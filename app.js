@@ -10,7 +10,6 @@ const sassMiddleware = require('node-sass-middleware');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const dashboardRouter = require('./routes/dashboard');
-const usersRouter = require('./routes/users');
 
 const app = express();
 
@@ -49,7 +48,6 @@ app.use(flash());
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/dashboard', dashboardRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

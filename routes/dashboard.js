@@ -9,11 +9,16 @@ const router = express.Router();
 
 /* GET home page. */
 router.get('/', (req, res) => {
+  const { status } = req.query || 'all';
   todolistRef.orderByChild('upDateTime').once('value')
     .then((snapshot) => {
       const todolist = [];
       snapshot.forEach((item) => {
-        todolist.push(item.val());
+        if (status === 'all') {
+          todolist.push(item.val());
+        } else if (item.val().status === status) {
+          todolist.push(item.val());
+        }
       });
       res.render('dashboard/index', {
         title: '登入',
@@ -52,6 +57,7 @@ router.post('/todolist/created', (req, res) => {
   const upDateTime = Math.floor(Date.now() / 1000);
   todolistData.upDateTime = upDateTime;
   todolistData.id = todolistPush.key;
+  todolistData.status = req.body.status || 'off';
   todolistRef.orderByChild('title').equalTo(todolistData.title).once('value')
     .then((snapshot) => {
       if (snapshot.val() !== null) {
